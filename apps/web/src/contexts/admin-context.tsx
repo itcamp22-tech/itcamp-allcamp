@@ -58,7 +58,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // In production, you'd use a dynamic host based on environment
-    const socket = new WebSocket("ws://localhost:3000/ws");
+    const socket = new WebSocket("ws://103.216.158.108:3000/ws");
     
     socket.onopen = () => {
       setConnected(true);
