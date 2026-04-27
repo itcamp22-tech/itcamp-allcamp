@@ -1,10 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { useAdmin, Score } from "../contexts/admin-context";
-import { INITIAL_ITEMS } from "../lib/constants";
+import { INITIAL_ITEMS, DEFAULT_SCORING, DEFAULT_ECONOMY } from "../lib/constants";
 import { Card, CardHeader, CardTitle, CardContent } from "@itcamp-allcamp/ui/components/card";
+import { Button } from "@itcamp-allcamp/ui/components/button";
 import { Input } from "@itcamp-allcamp/ui/components/input";
 import { Label } from "@itcamp-allcamp/ui/components/label";
-import { Settings } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "@itcamp-allcamp/ui/components/dialog";
+import { Settings, AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   component: AdminComponent,
@@ -13,6 +23,11 @@ export const Route = createFileRoute("/admin")({
 const HOUSES: (keyof Score)[] = ["re", "drop", "pro", "tire"];
 
 function AdminComponent() {
+  const [isWeightsResetOpen, setIsWeightsResetOpen] = useState(false);
+  const [isScoreResetOpen, setIsScoreResetOpen] = useState(false);
+  const [isScoringResetOpen, setIsScoringResetOpen] = useState(false);
+  const [isEconomyResetOpen, setIsEconomyResetOpen] = useState(false);
+
   const {
     ownValue,
     setOwnValue,
@@ -47,6 +62,37 @@ function AdminComponent() {
     });
   };
 
+  const resetWeights = () => {
+    const defaultWeights = INITIAL_ITEMS.reduce((acc, item) => ({ 
+      ...acc, 
+      [item.id]: item.defaultWeight 
+    }), {});
+    setItemWeights(defaultWeights);
+    setIsWeightsResetOpen(false);
+  };
+
+  const resetScores = () => {
+    const newScore = { ...score };
+    HOUSES.forEach(h => {
+      newScore[h] = { re: 0, drop: 0, pro: 0, tire: 0 };
+    });
+    setScore(newScore);
+    setIsScoreResetOpen(false);
+  };
+
+  const resetScoring = () => {
+    setOwnValue(DEFAULT_SCORING.ownValue);
+    setOtherValue(DEFAULT_SCORING.otherValue);
+    setIsScoringResetOpen(false);
+  };
+
+  const resetEconomy = () => {
+    setSpinPrice(DEFAULT_ECONOMY.spinPrice);
+    setSecretRoomPrice(DEFAULT_ECONOMY.secretRoomPrice);
+    setTicketStock(DEFAULT_ECONOMY.ticketStock);
+    setIsEconomyResetOpen(false);
+  };
+
   return (
     <div className="min-h-dvh bg-background p-6 lg:p-12">
       <div className="max-w-4xl mx-auto space-y-8 py-20">
@@ -62,8 +108,28 @@ function AdminComponent() {
 
         <div className="grid md:grid-cols-2 gap-6">
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0">
               <CardTitle className="text-xl uppercase tracking-wider">Global Scoring</CardTitle>
+              <Dialog open={isScoringResetOpen} onOpenChange={setIsScoringResetOpen}>
+                <Button variant="outline" size="sm" onClick={() => setIsScoringResetOpen(true)}>
+                  Reset
+                </Button>
+                <DialogContent>
+                  <DialogHeader>
+                    <div className="flex items-center gap-2 text-destructive mb-2">
+                      <AlertTriangle className="size-5" />
+                      <DialogTitle>Confirm Reset Scoring</DialogTitle>
+                    </div>
+                    <DialogDescription>
+                      This will reset the point multipliers back to their default values (Own: {DEFAULT_SCORING.ownValue}, Other: {DEFAULT_SCORING.otherValue}).
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter className="mt-4">
+                    <Button variant="ghost" onClick={() => setIsScoringResetOpen(false)}>Cancel</Button>
+                    <Button variant="destructive" onClick={resetScoring}>Yes, reset scoring</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -86,8 +152,28 @@ function AdminComponent() {
           </Card>
 
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0">
               <CardTitle className="text-xl uppercase tracking-wider">Economy</CardTitle>
+              <Dialog open={isEconomyResetOpen} onOpenChange={setIsEconomyResetOpen}>
+                <Button variant="outline" size="sm" onClick={() => setIsEconomyResetOpen(true)}>
+                  Reset
+                </Button>
+                <DialogContent>
+                  <DialogHeader>
+                    <div className="flex items-center gap-2 text-destructive mb-2">
+                      <AlertTriangle className="size-5" />
+                      <DialogTitle>Confirm Reset Economy</DialogTitle>
+                    </div>
+                    <DialogDescription>
+                      This will reset spin prices and ticket stock back to their original values.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter className="mt-4">
+                    <Button variant="ghost" onClick={() => setIsEconomyResetOpen(false)}>Cancel</Button>
+                    <Button variant="destructive" onClick={resetEconomy}>Yes, reset economy</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -122,8 +208,28 @@ function AdminComponent() {
         </div>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
             <CardTitle className="text-xl uppercase tracking-wider">House Inventories</CardTitle>
+            <Dialog open={isScoreResetOpen} onOpenChange={setIsScoreResetOpen}>
+              <Button variant="outline" size="sm" onClick={() => setIsScoreResetOpen(true)}>
+                Reset to 0
+              </Button>
+              <DialogContent>
+                <DialogHeader>
+                  <div className="flex items-center gap-2 text-destructive mb-2">
+                    <AlertTriangle className="size-5" />
+                    <DialogTitle>Confirm Reset Scores</DialogTitle>
+                  </div>
+                  <DialogDescription>
+                    This will set ALL house inventories to 0. This action is permanent and will affect all live players.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="mt-4">
+                  <Button variant="ghost" onClick={() => setIsScoreResetOpen(false)}>Cancel</Button>
+                  <Button variant="destructive" onClick={resetScores}>Yes, reset all scores</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-2 gap-6">
@@ -153,8 +259,28 @@ function AdminComponent() {
         </Card>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
             <CardTitle className="text-xl uppercase tracking-wider">Secret Room Drop Rates (Weights)</CardTitle>
+            <Dialog open={isWeightsResetOpen} onOpenChange={setIsWeightsResetOpen}>
+              <Button variant="outline" size="sm" onClick={() => setIsWeightsResetOpen(true)}>
+                Reset to Defaults
+              </Button>
+              <DialogContent>
+                <DialogHeader>
+                  <div className="flex items-center gap-2 text-destructive mb-2">
+                    <AlertTriangle className="size-5" />
+                    <DialogTitle>Confirm Reset Weights</DialogTitle>
+                  </div>
+                  <DialogDescription>
+                    This will restore all item drop weights to their original factory values.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="mt-4">
+                  <Button variant="ghost" onClick={() => setIsWeightsResetOpen(false)}>Cancel</Button>
+                  <Button variant="destructive" onClick={resetWeights}>Yes, reset weights</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2">

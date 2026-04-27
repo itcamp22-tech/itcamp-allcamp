@@ -9,6 +9,17 @@ export interface GachaItem {
   icon: any;
 }
 
+export const DEFAULT_SCORING = {
+  ownValue: 25,
+  otherValue: -10,
+};
+
+export const DEFAULT_ECONOMY = {
+  spinPrice: 5,
+  secretRoomPrice: 15,
+  ticketStock: 5,
+};
+
 export const INITIAL_ITEMS: GachaItem[] = [
   {
     id: 1,
