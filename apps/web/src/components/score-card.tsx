@@ -77,7 +77,7 @@ export function ScoreCard({
     <Card className="flex flex-col">
       <CardHeader className="justify-center pb-0">
         <CardTitle className="font-bold text-4xl flex items-center gap-2">
-          <div className={`size-8 rounded-full bg-${categoryKey}`} />
+          <div className={`size-8 rounded-full bg-${String(categoryKey)}`} />
           {label}
         </CardTitle>
       </CardHeader>
@@ -137,7 +137,7 @@ export function ScoreCard({
             const calculated = rawScore * multiplier;
 
             return (
-              <React.Fragment key={cat.key}>
+              <React.Fragment key={String(cat.key)}>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2 uppercase">
                     <div className={`size-4 ${cat.colorClass} rounded-full`} />

@@ -49,7 +49,22 @@ function RouteComponent() {
   const [showSummary, setShowSummary] = useState(false);
   const [hasSpun, setHasSpun] = useState(false);
 
-  const { ownValue, otherValue } = useScore();
+  const { ownValue, otherValue, score, setScore } = useScore();
+
+  const applyRewards = (finalRewards: Record<Home, number>) => {
+    if (!home) return;
+    const newScore = {
+      ...score,
+      [home]: {
+        ...score[home]
+      }
+    };
+    const keys = Object.values(Home);
+    keys.forEach(k => {
+      newScore[home][k] += finalRewards[k];
+    });
+    setScore(newScore);
+  };
 
   const handleSpin = () => {
     if (skipAnimation) {
@@ -61,6 +76,7 @@ function RouteComponent() {
       }
       setReward(finalRewards);
       setHasSpun(true);
+      applyRewards(finalRewards);
       setShowSummary(true);
     } else {
       setIsSpinning(true);
@@ -83,6 +99,7 @@ function RouteComponent() {
           setActiveCard(null);
           setIsSpinning(false);
           setHasSpun(true);
+          applyRewards(tempRewards);
           setTimeout(() => setShowSummary(true), 600);
         }
       }, intervalDelay);

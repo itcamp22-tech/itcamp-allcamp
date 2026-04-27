@@ -35,11 +35,11 @@ function HomeComponent() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 w-full mt-19 container">
         {CATEGORIES.map((cat) => (
           <ScoreCard
-            key={cat.key}
+            key={String(cat.key)}
             categoryKey={cat.key}
             label={cat.label}
-            scoreData={score[cat.key]}
-            totalScore={getCalculatedTotal(cat.key)}
+            scoreData={score[cat.key as keyof typeof score]}
+            totalScore={getCalculatedTotal(cat.key as keyof typeof score)}
             ownValue={ownValue}
             otherValue={otherValue}
           />

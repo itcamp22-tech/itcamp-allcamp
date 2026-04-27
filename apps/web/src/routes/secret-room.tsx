@@ -59,7 +59,102 @@ function SecretRoomComponent() {
   const [hasSpun, setHasSpun] = useState(false);
   const [targetHouse, setTargetHouse] = useState<Home | null>(null);
 
-  const { ownValue, otherValue } = useScore();
+  const { ownValue, otherValue, score, setScore } = useScore();
+
+  const handleClaim = () => {
+    if (!home || !result) return;
+    const newScore = {
+      re: { ...score.re },
+      drop: { ...score.drop },
+      pro: { ...score.pro },
+      tire: { ...score.tire },
+    };
+    const keys = Object.values(Home);
+
+    switch (result.id) {
+      case 1: {
+        let toTransform = 2;
+        for (const k of keys) {
+          if (k !== home && newScore[home][k] > 0) {
+            const deduct = Math.min(toTransform, newScore[home][k]);
+            newScore[home][k] -= deduct;
+            newScore[home][home] += deduct;
+            toTransform -= deduct;
+          }
+          if (toTransform === 0) break;
+        }
+        break;
+      }
+      case 2:
+        keys.forEach(k => {
+          if (k !== home) {
+            newScore[k][home] += 2;
+          }
+        });
+        break;
+      case 3:
+        if (targetHouse) {
+          let toMove = 2;
+          for (const k of keys) {
+            if (newScore[home][k] > 0) {
+              const deduct = Math.min(toMove, newScore[home][k]);
+              newScore[home][k] -= deduct;
+              newScore[targetHouse][k] += deduct;
+              toMove -= deduct;
+            }
+            if (toMove === 0) break;
+          }
+        }
+        break;
+      case 4:
+        newScore[home][home] += 4;
+        break;
+      case 5:
+        if (targetHouse) {
+          let toSteal = 2;
+          for (const k of keys) {
+            if (newScore[targetHouse][k] > 0) {
+              const deduct = Math.min(toSteal, newScore[targetHouse][k]);
+              newScore[targetHouse][k] -= deduct;
+              newScore[home][home] += deduct;
+              toSteal -= deduct;
+            }
+            if (toSteal === 0) break;
+          }
+        }
+        break;
+      case 6:
+        keys.forEach(k => {
+          if (k !== home) {
+            newScore[k][k] = Math.max(0, newScore[k][k] - 2);
+          }
+        });
+        break;
+      case 7:
+        // Handled by admin stock
+        break;
+      case 8:
+        break;
+      case 9:
+        if (targetHouse) {
+          let toDeduct = 2;
+          for (const k of keys) {
+            if (newScore[targetHouse][k] > 0) {
+              const deduct = Math.min(toDeduct, newScore[targetHouse][k]);
+              newScore[targetHouse][k] -= deduct;
+              toDeduct -= deduct;
+            }
+            if (toDeduct === 0) break;
+          }
+        }
+        break;
+      case 10:
+        break;
+    }
+
+    setScore(newScore);
+    setShowResult(false);
+  };
 
   const handleSpin = () => {
     setIsSpinning(true);
@@ -384,11 +479,11 @@ function SecretRoomComponent() {
                </div>
 
                <Button 
-                 onClick={() => setShowResult(false)} 
+                 onClick={handleClaim} 
                  disabled={[3, 5, 9].includes(result.id) && !targetHouse}
                  className="w-full h-14 mt-4 text-lg font-bold uppercase"
                >
-                 {[3, 5, 9].includes(result.id) ? "Confirm Selection" : "Close"}
+                 {[3, 5, 9].includes(result.id) ? "Confirm Selection" : "Claim"}
                </Button>
              </div>
            )}
@@ -421,5 +516,3 @@ function SecretRoomComponent() {
     </>
   );
 }
-
-

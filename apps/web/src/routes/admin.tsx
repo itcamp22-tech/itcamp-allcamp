@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useAdmin } from "../contexts/admin-context";
+import { useAdmin, Score } from "../contexts/admin-context";
 import { INITIAL_ITEMS } from "../lib/constants";
 import { Card, CardHeader, CardTitle, CardContent } from "@itcamp-allcamp/ui/components/card";
 import { Input } from "@itcamp-allcamp/ui/components/input";
@@ -9,6 +9,8 @@ import { Settings } from "lucide-react";
 export const Route = createFileRoute("/admin")({
   component: AdminComponent,
 });
+
+const HOUSES: (keyof Score)[] = ["re", "drop", "pro", "tire"];
 
 function AdminComponent() {
   const {
@@ -24,12 +26,24 @@ function AdminComponent() {
     setTicketStock,
     itemWeights,
     setItemWeights,
+    score,
+    setScore,
   } = useAdmin();
 
   const handleWeightChange = (id: number, value: string) => {
     setItemWeights({
       ...itemWeights,
       [id]: Math.max(0, Number(value)),
+    });
+  };
+
+  const handleScoreChange = (houseKey: keyof Score, oreKey: keyof Score, value: string) => {
+    setScore({
+      ...score,
+      [houseKey]: {
+        ...score[houseKey],
+        [oreKey]: Math.max(0, Number(value)),
+      }
     });
   };
 
@@ -106,6 +120,37 @@ function AdminComponent() {
             </CardContent>
           </Card>
         </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl uppercase tracking-wider">House Inventories</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-6">
+              {HOUSES.map((houseKey) => (
+                <div key={houseKey} className="space-y-3 bg-muted/30 p-4 rounded-xl border border-border/50">
+                  <h3 className="font-black uppercase tracking-wider text-primary border-b pb-2 mb-2">
+                    {houseKey} House Inventory
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {HOUSES.map((oreKey) => (
+                      <div key={oreKey} className="flex items-center justify-between gap-2">
+                        <Label className="text-xs uppercase w-8">{oreKey}:</Label>
+                        <Input
+                          type="number"
+                          min={0}
+                          value={score[houseKey][oreKey]}
+                          onChange={(e) => handleScoreChange(houseKey, oreKey, e.target.value)}
+                          className="h-8 text-xs"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>
