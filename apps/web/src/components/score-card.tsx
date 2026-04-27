@@ -37,7 +37,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export const CATEGORIES: { key: keyof Score; label: string; colorClass: string }[] = [
+export const CATEGORIES: {
+  key: keyof Score;
+  label: string;
+  colorClass: string;
+}[] = [
   { key: "re", label: "RE", colorClass: "bg-re" },
   { key: "drop", label: "DROP", colorClass: "bg-drop" },
   { key: "pro", label: "PRO", colorClass: "bg-pro" },
@@ -59,7 +63,8 @@ export function ScoreCard({
   ownValue: number;
   otherValue: number;
 }) {
-  const totalCount = scoreData.re + scoreData.drop + scoreData.pro + scoreData.tire;
+  const totalCount =
+    scoreData.re + scoreData.drop + scoreData.pro + scoreData.tire;
 
   const chartData = useMemo(() => {
     if (totalCount === 0) {
@@ -82,7 +87,7 @@ export function ScoreCard({
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-4">
-        <ChartContainer
+        {/* <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[250px]"
         >
@@ -129,7 +134,12 @@ export function ScoreCard({
               />
             </Pie>
           </PieChart>
-        </ChartContainer>
+        </ChartContainer> */}
+        <div
+          className={`text-7xl py-10 font-bold ${totalScore < 0 ? "text-red-500" : totalScore > 0 ? "text-green-500" : "text-white"} flex justify-center items-center`}
+        >
+          {totalScore.toLocaleString()}
+        </div>
         <div className="w-full flex flex-col gap-2 mt-4">
           {CATEGORIES.map((cat, idx) => {
             const rawScore = scoreData[cat.key];

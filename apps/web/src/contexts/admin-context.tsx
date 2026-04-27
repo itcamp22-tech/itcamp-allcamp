@@ -57,8 +57,12 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   });
 
   useEffect(() => {
-    // In production, you'd use a dynamic host based on environment
-    const socket = new WebSocket("ws://103.216.158.108:3000/ws");
+    const serverUrl = "https://allcamp.suwizx.dev";
+    const protocol = serverUrl.startsWith("https") ? "wss" : "ws";
+    const wsUrl = serverUrl.replace(/^https?/, protocol) + "/ws";
+    
+    console.log("Connecting to WebSocket:", wsUrl);
+    const socket = new WebSocket(wsUrl);
     
     socket.onopen = () => {
       setConnected(true);

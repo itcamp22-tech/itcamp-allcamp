@@ -4,6 +4,7 @@ import { ScoreCard, CATEGORIES } from "../components/score-card";
 
 export const Route = createFileRoute("/")({
   component: HomeComponent,
+  ssr:false
 });
 
 function HomeComponent() {

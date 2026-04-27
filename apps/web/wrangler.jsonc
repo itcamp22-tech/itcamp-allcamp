@@ -6,6 +6,9 @@
   "compatibility_flags": ["nodejs_compat"],
   "main": "@tanstack/react-start/server-entry",
   "observability": {
-    "enabled": true,
+    "enabled": true
   },
-}
+  "vars": {
+    "VITE_SERVER_URL": "http://100.107.107.39:3000"
+  }
+  }
