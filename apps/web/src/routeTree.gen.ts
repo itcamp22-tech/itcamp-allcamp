@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SpinRouteImport } from './routes/spin'
+import { Route as SecretRoomRouteImport } from './routes/secret-room'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SpinRoute = SpinRouteImport.update({
   id: '/spin',
   path: '/spin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecretRoomRoute = SecretRoomRouteImport.update({
+  id: '/secret-room',
+  path: '/secret-room',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,27 +31,31 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/secret-room': typeof SecretRoomRoute
   '/spin': typeof SpinRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/secret-room': typeof SecretRoomRoute
   '/spin': typeof SpinRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/secret-room': typeof SecretRoomRoute
   '/spin': typeof SpinRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/spin'
+  fullPaths: '/' | '/secret-room' | '/spin'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/spin'
-  id: '__root__' | '/' | '/spin'
+  to: '/' | '/secret-room' | '/spin'
+  id: '__root__' | '/' | '/secret-room' | '/spin'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SecretRoomRoute: typeof SecretRoomRoute
   SpinRoute: typeof SpinRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/spin'
       fullPath: '/spin'
       preLoaderRoute: typeof SpinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/secret-room': {
+      id: '/secret-room'
+      path: '/secret-room'
+      fullPath: '/secret-room'
+      preLoaderRoute: typeof SecretRoomRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SecretRoomRoute: SecretRoomRoute,
   SpinRoute: SpinRoute,
 }
 export const routeTree = rootRouteImport
