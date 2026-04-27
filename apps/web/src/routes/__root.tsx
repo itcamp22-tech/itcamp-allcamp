@@ -3,6 +3,7 @@ import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanst
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 import Header from "../components/header";
+import { AdminProvider } from "../contexts/admin-context";
 
 import appCss from "../index.css?url";
 
@@ -40,12 +41,14 @@ function RootDocument() {
         <HeadContent />
       </head>
       <body>
-        <div className="grid h-svh grid-rows-[auto_1fr]">
-          <Header />
-          <Outlet />
-        </div>
-        <Toaster richColors />
-        <TanStackRouterDevtools position="bottom-left" />
+        <AdminProvider>
+          <div className="grid h-svh grid-rows-[auto_1fr]">
+            <Header />
+            <Outlet />
+          </div>
+          <Toaster richColors />
+          <TanStackRouterDevtools position="bottom-left" />
+        </AdminProvider>
         <Scripts />
       </body>
     </html>

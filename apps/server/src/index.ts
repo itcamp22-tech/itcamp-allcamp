@@ -2,7 +2,7 @@ import { cors } from "@elysiajs/cors";
 import { env } from "@itcamp-allcamp/env/server";
 import { Elysia } from "elysia";
 
-const app = new Elysia()
+export const app = new Elysia()
   .use(
     cors({
       origin: env.CORS_ORIGIN,

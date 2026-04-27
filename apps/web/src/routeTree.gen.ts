@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SpinRouteImport } from './routes/spin'
 import { Route as SecretRoomRouteImport } from './routes/secret-room'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SpinRoute = SpinRouteImport.update({
@@ -23,6 +24,11 @@ const SecretRoomRoute = SecretRoomRouteImport.update({
   path: '/secret-room',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -31,30 +37,34 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/secret-room': typeof SecretRoomRoute
   '/spin': typeof SpinRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/secret-room': typeof SecretRoomRoute
   '/spin': typeof SpinRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/secret-room': typeof SecretRoomRoute
   '/spin': typeof SpinRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/secret-room' | '/spin'
+  fullPaths: '/' | '/admin' | '/secret-room' | '/spin'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/secret-room' | '/spin'
-  id: '__root__' | '/' | '/secret-room' | '/spin'
+  to: '/' | '/admin' | '/secret-room' | '/spin'
+  id: '__root__' | '/' | '/admin' | '/secret-room' | '/spin'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   SecretRoomRoute: typeof SecretRoomRoute
   SpinRoute: typeof SpinRoute
 }
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SecretRoomRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   SecretRoomRoute: SecretRoomRoute,
   SpinRoute: SpinRoute,
 }

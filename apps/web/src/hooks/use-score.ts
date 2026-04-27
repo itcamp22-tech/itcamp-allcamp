@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAdmin } from "../contexts/admin-context";
 
 export interface CategoryScore {
   re: number;
@@ -42,8 +43,7 @@ export function useScore() {
     },
   });
 
-  const [ownValue, setOwnValue] = useState(25);
-  const [otherValue, setOtherValue] = useState(-10);
+  const { ownValue, setOwnValue, otherValue, setOtherValue } = useAdmin();
 
   const getCalculatedTotal = (category: keyof Score) => {
     const data = score[category];

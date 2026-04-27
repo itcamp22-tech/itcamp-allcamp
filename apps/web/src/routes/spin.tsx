@@ -1,4 +1,5 @@
 import { useScore } from "../hooks/use-score";
+import { useAdmin } from "../contexts/admin-context";
 import { Card } from "@itcamp-allcamp/ui/components/card";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
@@ -30,9 +31,10 @@ export const Route = createFileRoute("/spin")({
 });
 
 function RouteComponent() {
+  const { spinPrice } = useAdmin();
   const [modalOpen, setModalOpen] = useState(true);
   const [home, setHome] = useState<Home | null>(Home.Re);
-  const [randomPrice] = useState(5);
+  const randomPrice = spinPrice;
   const [randomTime, setRandomTime] = useState(0);
   const [skipAnimation, setSkipAnimation] = useState(false);
   const [reward, setReward] = useState<Record<Home, number>>({
