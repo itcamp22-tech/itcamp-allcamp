@@ -2,7 +2,7 @@ import { useScore } from "../hooks/use-score";
 import { useAdmin } from "../contexts/admin-context";
 import { Card } from "@itcamp-allcamp/ui/components/card";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +11,7 @@ import {
 } from "@itcamp-allcamp/ui/components/dialog";
 import { Button } from "@itcamp-allcamp/ui/components/button";
 import { Checkbox } from "@itcamp-allcamp/ui/components/checkbox";
+import { Badge } from "@itcamp-allcamp/ui/components/badge";
 
 enum Home {
   Re = "re",
@@ -48,8 +49,19 @@ function RouteComponent() {
   const [activeCard, setActiveCard] = useState<Home | null>(null);
   const [showSummary, setShowSummary] = useState(false);
   const [hasSpun, setHasSpun] = useState(false);
+  const [isProMode, setIsProMode] = useState(false);
 
   const { ownValue, otherValue, score, setScore } = useScore();
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === "p") {
+        setIsProMode((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const applyRewards = (finalRewards: Record<Home, number>) => {
     if (!home) return;
@@ -71,7 +83,9 @@ function RouteComponent() {
       const finalRewards = { re: 0, drop: 0, pro: 0, tire: 0 } as Record<Home, number>;
       const keys = Object.values(Home);
       for (let i = 0; i < randomTime; i++) {
-        const randomKey = keys[Math.floor(Math.random() * keys.length)];
+        const randomKey = isProMode && home 
+          ? home 
+          : keys[Math.floor(Math.random() * keys.length)];
         finalRewards[randomKey]++;
       }
       setReward(finalRewards);
@@ -88,7 +102,9 @@ function RouteComponent() {
       const intervalDelay = Math.max(30, Math.min(150, 3000 / Math.max(1, randomTime))); 
       
       const interval = setInterval(() => {
-        const randomKey = keys[Math.floor(Math.random() * keys.length)];
+        const randomKey = isProMode && home 
+          ? home 
+          : keys[Math.floor(Math.random() * keys.length)];
         setActiveCard(randomKey);
         tempRewards[randomKey]++;
         setReward({ ...tempRewards });
@@ -117,6 +133,18 @@ function RouteComponent() {
 
   return (
     <>
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+        <Badge 
+          variant={isProMode ? "default" : "outline"}
+          className={`px-3 py-1 text-sm font-bold transition-all duration-300 ${isProMode ? "bg-green-500 hover:bg-green-600 text-white border-transparent" : "text-muted-foreground"}`}
+        >
+          PRO MODE {isProMode ? "ON" : "OFF"}
+          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 ml-2">
+            P
+          </kbd>
+        </Badge>
+      </div>
+
       <Dialog 
         open={modalOpen} 
         onOpenChange={(isOpen) => {
@@ -181,6 +209,18 @@ function RouteComponent() {
               >
                 Skip Animation
               </label>
+            </div>
+            <div className="flex items-center justify-between border-t pt-4">
+              <span className="text-sm font-semibold uppercase">Pro Mode</span>
+              <Badge 
+                variant={isProMode ? "default" : "outline"}
+                className={`px-3 py-1 text-xs font-bold transition-all duration-300 ${isProMode ? "bg-green-500 hover:bg-green-600 text-white border-transparent" : "text-muted-foreground"}`}
+              >
+                {isProMode ? "ENABLED" : "DISABLED"}
+                <kbd className="pointer-events-none inline-flex h-4 select-none items-center gap-1 rounded border bg-muted px-1 font-mono text-[10px] font-medium text-muted-foreground opacity-100 ml-2">
+                  P
+                </kbd>
+              </Badge>
             </div>
             <div className="flex items-center justify-between border-t pt-4">
               <span className="text-sm font-semibold uppercase">Total Price</span>
