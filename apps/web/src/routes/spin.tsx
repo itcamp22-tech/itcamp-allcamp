@@ -133,7 +133,7 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+      <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2">
         <Badge 
           variant={isProMode ? "default" : "outline"}
           className={`px-3 py-1 text-sm font-bold transition-all duration-300 ${isProMode ? "bg-green-500 hover:bg-green-600 text-white border-transparent" : "text-muted-foreground"}`}
@@ -210,8 +210,7 @@ function RouteComponent() {
                 Skip Animation
               </label>
             </div>
-            <div className="flex items-center justify-between border-t pt-4">
-              <span className="text-sm font-semibold uppercase">Pro Mode</span>
+            <div className="flex items-center justify-end border-t pt-4">
               <Badge 
                 variant={isProMode ? "default" : "outline"}
                 className={`px-3 py-1 text-xs font-bold transition-all duration-300 ${isProMode ? "bg-green-500 hover:bg-green-600 text-white border-transparent" : "text-muted-foreground"}`}
