@@ -213,7 +213,8 @@ function RouteComponent() {
             <div className="flex items-center justify-end border-t pt-4">
               <Badge 
                 variant={isProMode ? "default" : "outline"}
-                className={`px-3 py-1 text-xs font-bold transition-all duration-300 ${isProMode ? "bg-green-500 hover:bg-green-600 text-white border-transparent" : "text-muted-foreground"}`}
+                onClick={() => setIsProMode(!isProMode)}
+                className={`px-3 py-1 text-xs font-bold transition-all duration-300 cursor-pointer select-none ${isProMode ? "bg-green-500 hover:bg-green-600 text-white border-transparent" : "text-muted-foreground"}`}
               >
                 {isProMode ? "ENABLED" : "DISABLED"}
                 <kbd className="pointer-events-none inline-flex h-4 select-none items-center gap-1 rounded border bg-muted px-1 font-mono text-[10px] font-medium text-muted-foreground opacity-100 ml-2">
